@@ -1,43 +1,38 @@
-const cardList = [
-  {
-    title: "Kitten 1",
-    image: "images/kitten.jpg",
-    link: "About Kitten 1",
-    description: "This is kitten 1. It is very cute and playful. Kittens are known for their playful nature and curiosity."
-  },
-  {
-    title: "Kitten 2",
-    image: "images/kitten-2.jpg",
-    link: "About Kitten 2",
-    description: "This is kitten 2. It loves naps and playing with yarn balls. Adorable and curious!"
-  },
-  {
-    title: "Kitten 3",
-    image: "images/kitten-3.jpg",
-    link: "About Kitten 3",
-    description: "Kitten 3 enjoys sunny windows and gentle head pats. Very affectionate and friendly."
-  }
-];
-
 const clickMe = () => {
   alert("Thanks for clicking me. Hope you have a nice day!");
 };
 
 const submitForm = () => {
-  let formData = {
+  const formData = {
     first_name: $('#first_name').val(),
     last_name: $('#last_name').val(),
-    password: $('#password').val(),
-    email: $('#email').val()
+    email: $('#email').val(),
+    password: $('#password').val()
   };
-  console.log("Form Data Submitted:", formData);
+
+  fetch('/api/form', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  })
+    .then(res => {
+      if (res.ok) {
+        M.toast({ html: 'Form submitted successfully!', classes: 'green' });
+      } else {
+        M.toast({ html: 'Failed to submit form.', classes: 'red' });
+      }
+    })
+    .catch(err => {
+      console.error('Error:', err);
+      M.toast({ html: 'Server error!', classes: 'red' });
+    });
 };
 
-
-
 const addCards = (items) => {
+  $("#card-section").empty();
   items.forEach(item => {
-    console.log("Card description:", item.description); 
     let itemToAppend = `
       <div class="col s4 center-align">
         <div class="card medium">
@@ -63,9 +58,19 @@ const addCards = (items) => {
   });
 };
 
-$(document).ready(function(){
+const getProjects = () => {
+  fetch('/api/projects')
+    .then(res => res.json())
+    .then(response => {
+      if (response.statusCode === 200) {
+        addCards(response.data);
+      }
+    });
+};
+
+$(document).ready(function () {
   $('.materialboxed').materialbox();
   $('#formSubmit').click(() => submitForm());
-  addCards(cardList);
+  getProjects();
   $('.modal').modal();
 });
