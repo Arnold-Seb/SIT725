@@ -12,29 +12,19 @@ const submitForm = () => {
 
   fetch('/api/form', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(formData)
   })
-    .then(res => {
-      if (res.ok) {
-        M.toast({ html: 'Form submitted successfully!', classes: 'green' });
-      } else {
-        M.toast({ html: 'Failed to submit form.', classes: 'red' });
-      }
-    })
-    .catch(err => {
-      console.error('Error:', err);
-      M.toast({ html: 'Server error!', classes: 'red' });
-    });
+    .then(res => res.ok ? res.json() : Promise.reject(res))
+    .then(() => M.toast({ html: 'Form submitted successfully!', classes: 'green' }))
+    .catch(() => M.toast({ html: 'Failed to submit form.', classes: 'red' }));
 };
 
 const addCards = (items) => {
   $("#card-section").empty();
   items.forEach(item => {
-    let itemToAppend = `
-      <div class="col s4 center-align">
+    const card = `
+      <div class="col s12 m6 l4 center-align">
         <div class="card medium">
           <div class="card-image waves-effect waves-block waves-light">
             <img class="activator" src="${item.image}">
@@ -45,7 +35,7 @@ const addCards = (items) => {
             </span>
             <p><a href="#">${item.link}</a></p>
           </div>
-          <div class="card-reveal" style="background-color: #fff0f5; color: #333;">
+          <div class="card-reveal" style="background-color:#fff0f5;color:#333;">
             <span class="card-title grey-text text-darken-4">
               ${item.title}<i class="material-icons right">close</i>
             </span>
@@ -54,7 +44,7 @@ const addCards = (items) => {
         </div>
       </div>
     `;
-    $("#card-section").append(itemToAppend);
+    $("#card-section").append(card);
   });
 };
 
@@ -62,15 +52,13 @@ const getProjects = () => {
   fetch('/api/projects')
     .then(res => res.json())
     .then(response => {
-      if (response.statusCode === 200) {
-        addCards(response.data);
-      }
+      if (response.statusCode === 200) addCards(response.data);
     });
 };
 
 $(document).ready(function () {
   $('.materialboxed').materialbox();
+  $('.modal').modal();
   $('#formSubmit').click(() => submitForm());
   getProjects();
-  $('.modal').modal();
 });
