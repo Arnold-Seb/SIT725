@@ -47,6 +47,9 @@
 
       <!-- Cards -->
       <div class="row" id="card-section"></div>
+      <div class="row center-align">
+        <h5 class="random-number">Random Number from Server: <span id="number"> - </span></h5>
+      </div>
     </div>
 
     <!-- Modal -->
@@ -88,7 +91,8 @@
   <!-- Vendor JS -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
+  <!-- Socket.IO client must load BEFORE your own scripts -->
+  <script src="/socket.io/socket.io.js"></script>
   <!-- App JS -->
   <script src="js/scripts.js"></script>
 </body>

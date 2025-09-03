@@ -62,3 +62,13 @@ $(document).ready(function () {
   $('#formSubmit').click(() => submitForm());
   getProjects();
 });
+
+// --- Socket.IO integration ---
+const socket = io();
+
+// Listen for "number" events from the server
+socket.on('number', (msg) => {
+  console.log('Random number:', msg);
+  const el = document.getElementById('number');
+  if (el) el.innerText = msg;
+});
